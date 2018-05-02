@@ -26,8 +26,6 @@ def body_to_earth_frame(ii, jj, kk):
 class PhysicsSim():
     def __init__(self, init_pose=None, init_velocities=None, init_angle_velocities=None, runtime=5.):
 
-        print("2: " + str(init_pose))
-
         self.init_pose = init_pose
         self.init_velocities = init_velocities
         self.init_angle_velocities = init_angle_velocities
@@ -55,7 +53,6 @@ class PhysicsSim():
         self.reset()
 
     def reset(self):
-        print(self.init_pose)
         self.time = 0.0
         self.pose = np.array([0.0, 0.0, 10.0, 0.0, 0.0, 0.0]) if self.init_pose is None else np.copy(self.init_pose)
         self.v = np.array([0.0, 0.0, 0.0]) if self.init_velocities is None else np.copy(self.init_velocities)

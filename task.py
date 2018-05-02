@@ -14,7 +14,6 @@ class Task():
             runtime: time limit for each episode
             target_pos: target/goal (x,y,z) position for the agent
         """
-        print("1: " + str(init_pose))
         # Simulation
         self.sim = PhysicsSim(init_pose, init_velocities, init_angle_velocities, runtime)
 
@@ -36,7 +35,6 @@ class Task():
 
     def get_reward(self, old_angular_v, old_v):
         """Uses current pose of sim to return reward."""
-        # print("2: " + str(self.target_pos) + " " + )
         distance_from_target = sigmoid(sum(abs(self.sim.pose[:3] - np.float32(self.target_pos))))
         
         # punish large deltas in euler angles and velocity to produce smooth flight
@@ -44,7 +42,7 @@ class Task():
         velocity_change = sigmoid(sum(abs(old_v - self.sim.v)))
         
         # reward = 1.0 - (3*distance_from_target) - euler_change - velocity_change
-        reward = 1.0 - (3 * distance_from_target)
+        reward = 1.0 - distance_from_target
 
         return reward
 

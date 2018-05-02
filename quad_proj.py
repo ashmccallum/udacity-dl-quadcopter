@@ -1,21 +1,20 @@
-# TODO: Train your agent here.
+
 import numpy as np
 from agents.agent123 import Agent
 from task import Task
 import matplotlib.pyplot as plt
-# % matplotlib notebook
 
 num_episodes = 100  # number of episodes
-init_pose = np.array([0., 0., 5., 0., 0., 0.])  # initial pose
+init_pose = np.array([0., 0., 10., 0., 0., 0.])  # initial pose
 init_velocities = np.array([0., 0., 0.])  # initial velocities
 init_angle_velocities = np.array([0., 0., 0.])  # initial angle velocities
 
-task = Task(init_pose, None, None)
+task = Task(init_pose=init_pose, init_velocities=init_velocities, init_angle_velocities=init_angle_velocities)
 agent = Agent(task)
 done = False
 
 display_graph = True
-display_freq = 10
+display_freq = 1
 
 
 # generate plot function
@@ -43,12 +42,12 @@ sub2.set_ylim(y2_lower, y2_upper)  # limits to your y2
 
 # set labels and colors for the axes
 sub1.set_xlabel('time (s)', color='k')
-sub1.set_ylabel('y1-axis label', color='g')
 sub1.tick_params(axis='x', colors='k')
 
+sub1.set_ylabel('z-height', color='g')
 sub1.tick_params(axis='y', colors="g")
 
-sub2.set_ylabel('y2-axis label', color='b')
+sub2.set_ylabel('total reward', color='b')
 sub2.tick_params(axis='y', colors='b')
 
 for episode in range(num_episodes + 1):
@@ -71,5 +70,6 @@ for episode in range(num_episodes + 1):
     if (episode % display_freq == 0) and (display_graph is True):
         plt_dynamic(x, y1, y2)
 
-    print("Episode = {:4d}, score = {:7.3f} (best = {:7.3f}), noise_scale = {}".format(
-        episode, agent.score, agent.best_score, agent.noise_scale))
+    print("Episode = {:4d}, reward = {:7.3f} (best = {:7.3f}), noise_scale = {}".format(
+        episode, agent.total_reward, agent.best_score, agent.noise_scale))
+
