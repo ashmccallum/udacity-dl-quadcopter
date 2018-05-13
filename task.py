@@ -26,8 +26,8 @@ class Task():
         self.action_repeat = 3
 
         self.state_size = self.action_repeat * 6
-        self.action_low = 700
-        self.action_high = 10000
+        self.action_low = 300
+        self.action_high = 1000
         self.action_size = 4
 
         # Goal
@@ -35,13 +35,16 @@ class Task():
 
     def get_reward(self, old_angular_v, old_v):
         """Uses current pose of sim to return reward."""
-        distance_from_target = sigmoid(sum(abs(self.sim.pose[:3] - np.float32(self.target_pos))))
+        distance_from_target = sigmoid(sum(abs(self.sim.pose[:3] - np.float32(self.target_pos))) / 3)
+
+        x_distance_from_target = abs(self.sim.pose[0] - np.float32(self.target_pos[0]))
+        y_distance_from_target = abs(self.sim.pose[1] - np.float32(self.target_pos[1]))
+        z_distance_from_target = abs(self.sim.pose[2] - np.float32(self.target_pos[2]))
         
         # punish large deltas in euler angles and velocity to produce smooth flight
         euler_change = sigmoid(sum(abs(old_angular_v - self.sim.angular_v)))
         velocity_change = sigmoid(sum(abs(old_v - self.sim.v)))
         
-        # reward = 1.0 - (3*distance_from_target) - euler_change - velocity_change
         reward = 1.0 - distance_from_target
 
         return reward

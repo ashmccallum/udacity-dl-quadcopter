@@ -1,20 +1,19 @@
-
 import numpy as np
 from agents.agent123 import Agent
 from task import Task
 import matplotlib.pyplot as plt
 
-num_episodes = 100  # number of episodes
-init_pose = np.array([0., 0., 10., 0., 0., 0.])  # initial pose
+
+num_episodes = 1000  # number of episodes
+init_pose = np.array([0., 0., 0., 0., 0., 0.])  # initial pose
 init_velocities = np.array([0., 0., 0.])  # initial velocities
 init_angle_velocities = np.array([0., 0., 0.])  # initial angle velocities
 
 task = Task(init_pose=init_pose, init_velocities=init_velocities, init_angle_velocities=init_angle_velocities)
 agent = Agent(task)
-done = False
 
 display_graph = True
-display_freq = 1
+display_freq = 10
 
 
 # generate plot function
@@ -31,9 +30,9 @@ sub2 = sub1.twinx()
 # set plot boundaries. y1 = z, y2 = reward
 time_limit = 5
 y1_lower = 0
-y1_upper = 20
-y2_lower = -100
-y2_upper = 50
+y1_upper = 100
+y2_lower = 0
+y2_upper = 20
 
 sub1.set_xlim(0, time_limit)  # this is typically time
 sub1.set_ylim(y1_lower, y1_upper)  # limits to your y1
@@ -52,15 +51,16 @@ sub2.tick_params(axis='y', colors='b')
 
 for episode in range(num_episodes + 1):
     state = agent.reset_episode()
+    done = False
 
     x, y1, y2 = [], [], []
 
     while done is False:
 
         if (episode % display_freq == 0) and (display_graph is True):
-            x.append(task.sim.time)
-            y1.append(task.sim.pose[2])
-            y2.append(agent.total_reward)
+            x.append(task.sim.time)  # x: time
+            y1.append(task.sim.pose[2])  # y1: z-height
+            y2.append(agent.score)  # y2: total reward
 
         action = agent.act(state)
         next_state, reward, done = task.step(action)
@@ -70,6 +70,6 @@ for episode in range(num_episodes + 1):
     if (episode % display_freq == 0) and (display_graph is True):
         plt_dynamic(x, y1, y2)
 
-    print("Episode = {:4d}, reward = {:7.3f} (best = {:7.3f}), noise_scale = {}".format(
-        episode, agent.total_reward, agent.best_score, agent.noise_scale))
+        print("Episode = {:4d}, score = {:7.3f} (best = {:7.3f}), noise_scale = {}".format(
+            episode, agent.score, agent.best_score, agent.noise_scale))
 
