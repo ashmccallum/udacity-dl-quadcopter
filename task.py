@@ -47,6 +47,12 @@ class Task():
         
         reward = 1.0 - distance_from_target
 
+        # penalise rewards further from end time
+        # TODO: implement this so it works for each time step. Also, the logic of this is just wrong...
+        # if self.sim.time < self.sim.runtime:
+            # reward -= reward / max(5 - (self.sim.runtime - self.sim.time), 2)
+            # reward -= reward / 2
+
         return reward
 
     def step(self, rotor_speeds):
@@ -59,7 +65,7 @@ class Task():
             old_v = self.sim.v
             
             done = self.sim.next_timestep(rotor_speeds) # update the sim pose and velocities
-            reward += self.get_reward(old_angular_v, old_v) 
+            reward += self.get_reward(old_angular_v, old_v)
             pose_all.append(self.sim.pose)
         next_state = np.concatenate(pose_all)
         return next_state, reward, done
